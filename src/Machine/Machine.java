@@ -134,7 +134,7 @@ public class Machine{
 									if (p.pkt_id == -1) {
 										totalPkts = Integer.parseInt(p.msg_name);
 										byteLength = p.pkt_no;
-										System.out.println("Ready to receive "+totalPkts+" from "+p.client_ip);
+										System.out.println("Ready to receive "+totalPkts+" packets from "+p.client_ip);
 									}
 									else if (p.pkt_id == totalPkts) {
 										buffer.add(p);
@@ -195,17 +195,18 @@ public class Machine{
 						
 					   byte[] byteFile = new byte[byteLength];
 					   int i = 0;
-					   int j = 0;
+					   int k = 1;
 					   while (!receiveBuffer.isEmpty()){
 						   Packet pkt = receiveBuffer.poll();
-						   if (pkt.pkt_id != j) {
+						   if (pkt.pkt_id != k) {
 							   receiveBuffer.add(pkt);
 							   continue;
 						   }
-						   for (int j=0; j<pkt.payload.length && i<byteLength; j++){
-							   byteFile[i++] = pkt.payload[j];
+						   for (int j=0; i<byteLength; j++){
+							   byteFile[i] = pkt.payload[j];
+							   i++;
 						   }
-						   j++;
+						   k++;
 					   }
 					   
 					   byte[] orgFile = null;
