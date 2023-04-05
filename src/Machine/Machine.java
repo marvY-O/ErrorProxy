@@ -202,13 +202,13 @@ public class Machine{
 							   receiveBuffer.add(pkt);
 							   continue;
 						   }
-						   for (int j=0; i<byteLength; j++){
+						   for (int j=0; j<pkt.payload.length && i<byteLength; j++){
 							   byteFile[i] = pkt.payload[j];
 							   i++;
 						   }
 						   k++;
 					   }
-					   
+					   System.out.printf("File size: %d bytes", byteFile.length);
 					   byte[] orgFile = null;
 					   
 					   try {
