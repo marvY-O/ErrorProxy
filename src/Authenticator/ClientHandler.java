@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Queue;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.math.*;
 
 class ClientHandler implements Runnable {
     
@@ -34,9 +35,8 @@ class ClientHandler implements Runnable {
         return sb.toString();
     }
 
-    public static void randomlyManipulateBytes(byte[] byteArray) {
+    public static void randomlyManipulateBytes(byte[] byteArray, int numBytesToManipulate) {
     	Random random = new Random();
-    	int numBytesToManipulate = random.nextInt(3);
       
         for (int i = 0; i < numBytesToManipulate; i++) {
             int randomIndex = random.nextInt(byteArray.length);
@@ -131,7 +131,10 @@ class ClientHandler implements Runnable {
             			try {
             				curPacket.cert_id = certIDStore.get(s.getInetAddress());
             				if (curPacket.pkt_id >= 0 && introduceErrors) {
-            					randomlyManipulateBytes(curPacket.payload);
+            					Random random = new Random();
+            					int mbits = random.nextInt((int)Math.ceil(curPacket.payload.length * 0.3));
+            					System.out.printf("Manipulated %d bytes\n", mbits);
+            					randomlyManipulateBytes(curPacket.payload, mbits);
             				}
             				oos.writeObject(curPacket);
             			} catch(IOException e) {

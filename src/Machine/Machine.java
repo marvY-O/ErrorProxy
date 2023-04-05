@@ -220,7 +220,7 @@ public class Machine{
 					   if (orgFile != null) {
 						   //check dist;
 						   int hd = hammingDistance(orgFile, byteFile);
-						   System.out.printf("Hamming Distance = %d\n\n", hd);
+						   System.out.printf("\n\nHamming Distance = %d\n\n", hd);
 						   String baseName = outputPath.substring(0, outputPath.lastIndexOf('.'));
 						   String extension = outputPath.substring(outputPath.lastIndexOf('.'));
 						   outputPath = baseName + Integer.toString(2) + extension;
@@ -308,9 +308,10 @@ public class Machine{
                         pkt.payload[j] = (byte) file[index];
                         index++;
                     }
-                    if (index==file.length && j<pyld_size){
-                        pkt.payload[j] = (byte) '\0';
-                    }
+//                    if (index==file.length && j<pyld_size){
+//                        pkt.payload[j] = (byte) '\0';
+//                        j++;
+//                    }
                     buffer.add(pkt);
                 }
 
