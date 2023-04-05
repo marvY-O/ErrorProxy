@@ -34,6 +34,7 @@ public class run {
         System.out.printf("Enter port of the server: ");
     	int port = sc.nextInt();
         //int  port = 5000;
+    	
         
         Machine m = new Machine(ac_address, port, clientIP);
         m.initiate();

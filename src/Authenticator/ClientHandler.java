@@ -6,6 +6,7 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.Queue;
 import java.security.SecureRandom;
+import java.util.Random;
 
 class ClientHandler implements Runnable {
     
@@ -13,12 +14,14 @@ class ClientHandler implements Runnable {
     public HashMap<InetAddress, Queue<Packet>> buffer;
     public HashMap<InetAddress, String> certIDStore;
 	String serverIP;
+	Boolean introduceErrors;
       
-    public ClientHandler(Socket sc, HashMap<InetAddress, Queue<Packet>> buffer, HashMap<InetAddress, String> certIDStore, String serverIP) throws IOException{
+    public ClientHandler(Socket sc, HashMap<InetAddress, Queue<Packet>> buffer, HashMap<InetAddress, String> certIDStore, String serverIP, Boolean introduceErrors) throws IOException{
         s = sc;
         this.buffer = buffer;
         this.certIDStore = certIDStore;
 		this.serverIP = serverIP;
+		this.introduceErrors = introduceErrors;
     }
 
     public static String generate() {
@@ -29,6 +32,16 @@ class ClientHandler implements Runnable {
             sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
         }
         return sb.toString();
+    }
+
+    public static void randomlyManipulateBytes(byte[] byteArray) {
+    	Random random = new Random();
+    	int numBytesToManipulate = random.nextInt(3);
+      
+        for (int i = 0; i < numBytesToManipulate; i++) {
+            int randomIndex = random.nextInt(byteArray.length);
+            byteArray[randomIndex] = (byte) random.nextInt(256);
+        }
     }
   
     @Override
@@ -117,6 +130,9 @@ class ClientHandler implements Runnable {
                 		}
             			try {
             				curPacket.cert_id = certIDStore.get(s.getInetAddress());
+            				if (curPacket.pkt_id >= 0 && introduceErrors) {
+            					randomlyManipulateBytes(curPacket.payload);
+            				}
             				oos.writeObject(curPacket);
             			} catch(IOException e) {
             				e.printStackTrace();

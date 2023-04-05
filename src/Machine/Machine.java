@@ -195,11 +195,17 @@ public class Machine{
 						
 					   byte[] byteFile = new byte[byteLength];
 					   int i = 0;
+					   int j = 0;
 					   while (!receiveBuffer.isEmpty()){
 						   Packet pkt = receiveBuffer.poll();
+						   if (pkt.pkt_id != j) {
+							   receiveBuffer.add(pkt);
+							   continue;
+						   }
 						   for (int j=0; j<pkt.payload.length && i<byteLength; j++){
 							   byteFile[i++] = pkt.payload[j];
 						   }
+						   j++;
 					   }
 					   
 					   byte[] orgFile = null;

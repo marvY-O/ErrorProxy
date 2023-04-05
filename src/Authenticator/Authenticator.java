@@ -11,6 +11,7 @@ public class Authenticator {
     HashMap<InetAddress, Queue<Packet>> buffer;
     HashMap<InetAddress, String> certIDStore;
     String serverIP;
+    Boolean introduceErrors = false;
     
     public Authenticator(int port, String serverIP) {
         this.port = port;
@@ -22,6 +23,14 @@ public class Authenticator {
     public void start() throws IOException{
         ServerSocket ss = new ServerSocket(port);
         System.out.printf("Server started at %s:%d\n", serverIP, port);
+        System.out.printf("Tamper packets (y/n): ");
+        Scanner sc = new Scanner(System.in);
+        String inp = sc.nextLine();
+        
+        if (inp.equals("y")) {
+        	introduceErrors = true;
+        }
+        
         while (true){
             Socket s = null; 
             try {
@@ -33,7 +42,7 @@ public class Authenticator {
                 	buffer.put(s.getInetAddress(), new LinkedList<Packet>());
                 }
                 
-                ClientHandler clientNew = new ClientHandler(s, buffer, certIDStore, serverIP);
+                ClientHandler clientNew = new ClientHandler(s, buffer, certIDStore, serverIP, introduceErrors);
                 
                 Thread t = new Thread(clientNew);
                 t.start();                  
